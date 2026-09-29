@@ -1,0 +1,105 @@
+% !TEX program = xelatex
+% ============================================================
+%  爱因斯坦-德哈斯效应相关文献 中英对照集  —  公共导言
+% ============================================================
+\usepackage{xeCJK}
+\usepackage{fontspec}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{adjustbox}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{titletoc}
+\usepackage[most]{tcolorbox}
+\usepackage{needspace}
+\usepackage{footmisc}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\AtBeginDocument{\renewcommand{\contentsname}{目录}}
+
+\geometry{a4paper,left=2.4cm,right=2.4cm,top=2.6cm,bottom=2.6cm}
+
+% ---------- 防止内容溢出/重叠（务必保留） ----------
+% 让 LaTeX 放宽断行，避免行溢出伸进页边距与相邻内容重叠
+\setlength{\emergencystretch}{3em}
+\tolerance=2000
+\hbadness=3000
+% 禁止孤行寡行（段落首尾行悬空，配合图块防重叠）
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
+
+% ---------- 字体 ----------
+\setmainfont{Times New Roman}
+\setsansfont{Arial}
+\setCJKmainfont{SimSun}[BoldFont=SimHei,ItalicFont=FandolKai]
+\setCJKsansfont{SimHei}
+\setCJKfamilyfont{kai}{FandolKai}
+
+\newcommand{\kai}{\CJKfamily{kai}}
+
+% ---------- 颜色 ----------
+\definecolor{enColor}{RGB}{20,20,20}
+\definecolor{zhColor}{RGB}{10,40,90}
+\definecolor{termColor}{RGB}{150,20,20}
+\definecolor{capColor}{RGB}{90,90,90}
+\definecolor{ruleColor}{RGB}{180,180,180}
+
+% ---------- 标题样式 ----------
+\renewcommand{\chaptername}{}
+\renewcommand{\figurename}{图}
+\renewcommand{\tablename}{表}
+\titleformat{\chapter}[display]
+  {\bfseries\sffamily\Large}{}{0pt}{\Large}
+% 顶距不得为负：负值会把章名顶进页眉造成重叠
+\titlespacing*{\chapter}{0pt}{4pt}{18pt}
+% 目录只显示到章（每篇文献一条），不列小节
+\setcounter{tocdepth}{0}
+% 目录中章条目带编号
+\titlecontents{chapter}[0em]
+  {\addvspace{8pt}\bfseries\sffamily}
+  {\thecontentslabel\quad}{}
+  {\hfill\contentspage}
+
+\titleformat{\section}{\bfseries\sffamily\large}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\bfseries\sffamily\normalsize}{\thesubsection}{0.8em}{}
+
+% ---------- 页眉页脚 ----------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{}
+\fancyhead[R]{\small\sffamily\leftmark}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0pt}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+
+% ---------- 段落环境 ----------
+\newenvironment{enpara}%
+  {\par\smallskip\begingroup\color{enColor}\setstretch{1.05}\noindent}%
+  {\par\endgroup\smallskip}
+\newenvironment{zhpara}%
+  {\par\begingroup\color{zhColor}\setstretch{1.35}\noindent}%
+  {\par\endgroup\medskip}
+
+% 术语（首次出现加脚注），正文中把术语标红
+\newcommand{\term}[2]{\textcolor{termColor}{\textbf{#1}}%
+  \footnote{\textcolor{termColor}{\textbf{#1}}：\kai #2}}
+
+% 图表标题
+\newcommand{\figcap}[2]{\par{\small\color{capColor}\noindent #1}\par
+  {\footnotesize\color{capColor}\noindent\itshape #2}\par\smallskip}
+
+% 分隔线
+\newcommand{\pairrule}{\par\vspace{0.1em}{\color{ruleColor}\hrule height 0.4pt}\vspace{0.2em}}
+
+% 摘要标题（中英标注）
+\newcommand{\abstracthead}{\par\medskip\noindent
+  {\sffamily\bfseries\large\color{zhColor}摘要\ \textnormal{\itshape /\ Abstract}}\par\smallskip
+  {\color{ruleColor}\hrule height 0.6pt}\vspace{0.3em}}

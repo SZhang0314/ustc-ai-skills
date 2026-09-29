@@ -1,0 +1,25 @@
+{
+  "seed": 42,
+  "quantities": [
+    {
+      "name": "T",
+      "unit": "ms",
+      "true": 1.202,
+      "sigma": 0.002,
+      "n": 8,
+      "delta_ins": 0.002,
+      "resolution": 0.001,
+      "k": 2
+    },
+    {
+      "name": "A_n",
+      "unit": "V",
+      "true": 2.50,
+      "sigma": 0.01,
+      "n": 5,
+      "delta_ins": 0.01,
+      "resolution": 0.01,
+      "k": 2
+    }
+  ]
+}

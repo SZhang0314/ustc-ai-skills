@@ -1,0 +1,107 @@
+# Platform Interop
+
+This package keeps the scientific logic in one place and treats platform features as optional accelerators.
+
+## Core Rule
+
+The skill must still work when all you have is shell plus file access. Richer platform features are helpers, not dependencies.
+
+## Integrated Planning Artifact
+
+Across Codex, Clouds_Coder.py, Claude Code, and OpenCode, the portable planning artifact is the same project-relative Markdown file:
+
+```text
+workflow/integrated_research_plan.md
+```
+
+Create it for research-design work before launch-ready inputs, regardless of whether the selected route is DFT-only or multiscale. It uses only standard Markdown and stable claim/stage IDs, so no platform-specific planner, frontmatter, or tool call is required. Keep its `Control Snapshot` synchronized with the portable manifest and research spine; use the bundled validators from the copied project-local `scripts/` directory.
+
+## Clouds_Coder
+
+Recommended entry:
+
+- use the standard source skill directly for portable full-body loading
+- for Clouds compact loading, materialize a copy with `scripts/sync_skill_to_platforms.py --targets clouds --mode copy`; this applies `agents/clouds-coder.json` only to the generated target
+- preferred optimized project-local path: `skills/generated/dft-workflow-orchestrator/`
+- external-library discovery also works when `DFT_Skills/` is kept adjacent to the active `skills/` directory, because `Clouds_Coder.py` scans sibling directories for `skills/*/SKILL.md`
+
+Preferred accelerators:
+
+- `query_knowledge_library` for local RAG retrieval
+- `load_skill` for chaining with research or PDF skills
+- online search when local coverage is thin or the theory basis is incomplete
+
+Grounding order on Clouds_Coder.py:
+
+1. uploaded or local project materials
+2. local RAG retrieval
+3. online search
+4. model knowledge as the final fallback
+
+Stop at the first tier that already resolves the theory basis and experiment design.
+
+Fallback:
+
+- search workspace files directly
+- use the bundled scripts for preflight, scaffolding, job rendering, and analysis
+
+Native compatibility notes:
+
+- keep the skill itself inside the active `skills_root`, because `Clouds_Coder.py` resolves writes with `safe_path(..., skills_root)`
+- keep reusable assets inside the skill bundle only
+- keep generated calculation work outside the skill bundle, in a user project root such as `project/workflow`, `project/structures`, `project/runs`, and `project/analysis`
+- do not write run outputs, logs, or relaxed structures back into the skill directory during normal execution
+- keep `SKILL.md` standard and preserve `clouds_coder.preferred_tools`, `entrypoints`, and `runtime_contract` in `agents/clouds-coder.json`; the sync script renders them into the Clouds copy
+- preserve enough body detail that `load_skill` enters compact-mode loading, so the runtime shows the contract plus resource manifest first and deeper files stay on demand
+- use `query_knowledge_library` proactively on theory-heavy tasks, but only after uploaded and local materials have been checked first
+- keep front-end monitoring alive with `scripts/monitor_vasp_runs.py` when queues are running in the background
+
+Validation helper:
+
+- run `python3 scripts/verify_clouds_compat.py` from the skill directory to check the standard source, overlay entrypoints, rendered copy, and compact-mode behavior when `Clouds_Coder` is importable
+
+## Claude Code
+
+Supported local skill paths:
+
+1. project local: `.claude/skills/dft-workflow-orchestrator/SKILL.md`
+2. user level: `~/.claude/skills/dft-workflow-orchestrator/SKILL.md`
+
+The local path is the safest default because the bundled scripts remain close to the working repository.
+When Claude Code has web-capable tooling available, use uploaded files and local literature first, then web retrieval, then model prior. Stop when the current tier is already sufficient.
+
+## OpenCode
+
+OpenCode recognizes several routes:
+
+1. project local: `.opencode/skills/dft-workflow-orchestrator/SKILL.md`
+2. user level: `~/.config/opencode/skills/dft-workflow-orchestrator/SKILL.md`
+3. Claude-compatible skill paths
+4. Agent-standard paths under `.agents/skills/` or `~/.agents/skills/`
+
+That means one copied bundle can serve both OpenCode and Claude-compatible loaders.
+On OpenCode, prioritize uploaded or local sources first; use web retrieval when available; then use model knowledge with explicit uncertainty tags. Stop when the current tier is already sufficient.
+
+## Codex
+
+Portable contract:
+
+- standard `SKILL.md`
+- optional `agents/openai.yaml` UI metadata
+
+Local install targets vary by Codex surface, so the sync script supports both:
+
+1. `~/.codex/skills/dft-workflow-orchestrator/`
+2. `~/.agents/skills/dft-workflow-orchestrator/`
+
+If you do not know which surface is active, install both.
+On Codex surfaces without a dedicated RAG tool, emulate the same policy with local files plus web retrieval before relying on model memory, and stop the collection chain once the current tier is sufficient.
+
+## Portability Rules
+
+- keep standard `SKILL.md` frontmatter limited to `name` and `description`
+- keep platform-specific enhancement fields in sidecar overlays, not in the portable source frontmatter
+- keep reusable automation in `scripts/`
+- keep long methodology in `references/`
+- never require proprietary platform-only tool names to complete the workflow
+- prefer copied bundles over fragile fixed-path assumptions when distributing the skill

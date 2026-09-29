@@ -1,0 +1,89 @@
+% ================= 讲义导言区（与主文件配套，xelatex + ctex） =================
+% 主文件写法：
+%   \documentclass[11pt,a4paper]{article}
+%   \input{preamble.tex}   ← 本文件（只含 packages 与格式定义）
+%   \title{...}
+%   \begin{document} ... \tableofcontents ... 各章 ... \end{document}
+% 注意：xelatex 必须在讲义目录内运行（不要用 -output-directory，会破坏 figs/ 相对路径）
+
+\usepackage[UTF8]{ctex}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable,skins}   % ← breakable 必须显式加载，否则报错
+\usepackage{makecell}
+\usepackage{hyperref}
+
+\geometry{a4paper,left=2.3cm,right=2.3cm,top=2.5cm,bottom=2.3cm}
+
+% ---- 颜色 ----
+\definecolor{mainblue}{RGB}{20,60,130}
+\definecolor{deepblue}{RGB}{0,55,120}
+\definecolor{redbold}{RGB}{180,20,20}
+\definecolor{boxbg}{RGB}{242,246,252}
+\definecolor{boxframe}{RGB}{60,110,180}
+\definecolor{thmframe}{RGB}{160,60,40}
+\definecolor{thmbg}{RGB}{253,247,244}
+
+\hypersetup{colorlinks=true,linkcolor=deepblue,urlcolor=deepblue,citecolor=deepblue,
+  bookmarksnumbered=true,bookmarksopen=true}
+
+% ---- 标题格式 ----
+\titleformat{\section}{\normalfont\Large\bfseries\color{mainblue}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries\color{deepblue}}{\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries\color{boxframe}}{\thesubsubsection}{0.5em}{}
+\setcounter{tocdepth}{2}
+\setcounter{secnumdepth}{3}
+
+% ---- 页眉页脚 ----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{gray}课程讲义}
+\fancyhead[R]{\small\color{gray}\leftmark}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ---- 彩色提示框 ----
+\newtcolorbox{keybox}[1][]{
+  colback=boxbg, colframe=boxframe, boxrule=0.8pt, arc=2pt,
+  left=6pt,right=6pt,top=5pt,bottom=5pt,
+  fonttitle=\bfseries\color{white}, coltitle=white,
+  title=#1, breakable}
+
+\newtcolorbox{exbox}[1][]{
+  colback=thmbg, colframe=thmframe, boxrule=0.8pt, arc=2pt,
+  left=6pt,right=6pt,top=5pt,bottom=5pt,
+  fonttitle=\bfseries\color{white}, coltitle=white,
+  title=#1, breakable}
+
+% ---- 例题 / 习题环境 ----
+\newenvironment{example}[1]{\par\medskip\noindent\textbf{\color{redbold}【例】#1}\par\smallskip}{\par\medskip}
+\newenvironment{solution}{\par\noindent\textbf{\color{deepblue}【解】}\par\smallskip}{\par\medskip}
+\newenvironment{exercise}[1]{\par\medskip\noindent\textbf{\color{mainblue}【习题 #1】}\par\smallskip}{\par\medskip}
+\newenvironment{exsolution}{\par\noindent\textbf{\color{deepblue}【解答】}\par\smallskip}{\par\medskip}
+
+% ---- 常用宏 ----
+\newcommand{\ov}[1]{\overline{#1}}
+\newcommand{\XOR}{\oplus}
+\newcommand{\term}[1]{\textbf{\color{redbold}#1}}
+
+% ---- 图表 ----
+\captionsetup{font=small,labelfont=bf,skip=4pt}
+\renewcommand{\arraystretch}{1.15}
+% 电路图统一样式：按原比例，限制最大宽度与高度（防止大图溢出页面）
+\newcommand{\circfig}[3][1.0]{%
+  \begin{center}
+  \includegraphics[width=#1\linewidth,height=0.42\textheight,keepaspectratio]{#2}
+  \captionof{figure}{#3}
+  \end{center}}

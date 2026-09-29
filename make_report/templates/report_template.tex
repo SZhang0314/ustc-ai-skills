@@ -1,0 +1,47 @@
+% Reference LaTeX template used by build_report.py (embedded equivalent).
+% Compile with: xelatex report.tex  (twice, for TOC/cross-refs)
+\documentclass[12pt,a4paper]{ctexart}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{caption}
+\usepackage{float}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+
+\geometry{top=2.54cm,bottom=2.54cm,left=3.17cm,right=3.17cm}
+\onehalfspacing
+\setlength{\parindent}{2em}
+\setlength{\parskip}{3pt}
+
+\titleformat{\section}{\heiti\zihao{4}}{\thesection}{1em}{}
+\titleformat{\subsection}{\heiti\zihao{-4}}{\thesubsection}{1em}{}
+\captionsetup[table]{position=top,labelsep=quad}
+\captionsetup[figure]{position=bottom,labelsep=quad}
+
+\newcommand{\uA}{u_{\mathrm{A}}}
+\newcommand{\uB}{u_{\mathrm{B}}}
+\newcommand{\uC}{u_{\mathrm{C}}}
+
+\begin{document}
+
+% ---- 标题区 ----
+\begin{center}
+{\heiti\zihao{2} 实验题目}\\[1em]
+{\songti\zihao{5} 姓名\ \ 学号\ \ 院系}\\[0.3em]
+{\songti\zihao{5} 单位\ \ 指导教师\ \ 日期}
+\end{center}
+
+% ---- 摘要 ----
+\begin{center}{\heiti\zihao{5} 摘\quad 要}\end{center}
+{\zihao{5} 摘要正文……}
+\noindent{\heiti\zihao{5} 关键词：}{\zihao{5} 关键词一；关键词二；关键词三}
+
+% ---- 正文由 build_report.py 生成 ----
+
+\end{document}

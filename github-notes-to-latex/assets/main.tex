@@ -1,0 +1,220 @@
+%=====================================================================
+%  @@TITLE@@
+%  LaTeX 重排版本 —— 使用 XeLaTeX + ctexbook 编译
+%  由 github-notes-to-latex skill 生成；占位符由 refresh.py 替换。
+%=====================================================================
+\documentclass[UTF8,11pt,openany,papersize=a4]{ctexbook}
+
+%--------------------------- 页面与几何 -----------------------------
+\usepackage[a4paper,top=2.6cm,bottom=2.6cm,left=2.5cm,right=2.5cm,headheight=15pt]{geometry}
+
+%--------------------------- 字体与语言 -----------------------------
+\usepackage{fontspec}
+\usepackage{xeCJK}
+% Allow CJK characters (including full-width punctuation) inside math \text{}.
+\xeCJKsetup{CJKmath=true}
+% 中文字体：优先使用已安装的宋体等；缺失时回退到 Noto CJK。
+\IfFontExistsTF{SimSun}{
+  \setCJKmainfont{SimSun}[BoldFont=SimHei,ItalicFont=KaiTi]
+  \setCJKsansfont{SimHei}
+  \setCJKmonofont{FangSong}
+}{
+  \setCJKmainfont{Noto Serif CJK SC}[BoldFont=Noto Sans CJK SC]
+  \setCJKsansfont{Noto Sans CJK SC}
+  \setCJKmonofont{Noto Sans Mono CJK SC}
+}
+% 西文字体
+\IfFontExistsTF{Times New Roman}{
+  \setmainfont{Times New Roman}
+}{
+  \setmainfont{TeX Gyre Termes}
+}
+\IfFontExistsTF{Consolas}{
+  \setmonofont{Consolas}[Scale=0.92]
+}{
+  \setmonofont{DejaVu Sans Mono}[Scale=0.92]
+}
+
+%--------------------------- 数学与符号 -----------------------------
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{bm}
+\usepackage{mathrsfs}
+\usepackage{siunitx}
+
+%--------------------------- 图形与表格 -----------------------------
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{makecell}
+\graphicspath{{images/}{./images/}}
+
+%--------------------------- 列表与样式 -----------------------------
+\usepackage{enumitem}
+\setlist{itemsep=2pt,parsep=2pt,topsep=3pt}
+\usepackage{titlesec}
+
+%--------------------------- 代码高亮 -------------------------------
+\usepackage{listings}
+\usepackage{xcolor}
+\definecolor{codebg}{RGB}{247,247,247}
+\definecolor{codekw}{RGB}{0,92,197}
+\definecolor{codestr}{RGB}{201,44,44}
+\definecolor{codecom}{RGB}{120,120,120}
+\definecolor{rulegray}{RGB}{200,200,200}
+
+\lstdefinestyle{note}{
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{codekw}\bfseries,
+  stringstyle=\color{codestr},
+  commentstyle=\color{codecom}\itshape,
+  numberstyle=\tiny\color{codecom},
+  numbers=left,
+  numbersep=6pt,
+  frame=single,
+  rulecolor=\color{rulegray},
+  breaklines=true,
+  breakatwhitespace=false,
+  postbreak=\mbox{\textcolor{codecom}{$\hookrightarrow$\space}},
+  showstringspaces=false,
+  tabsize=4,
+  columns=fullflexible,
+  keepspaces=true,
+  upquote=true,
+  aboveskip=6pt,
+  belowskip=6pt,
+}
+\lstset{style=note}
+
+% Extra language definitions used by the notes.
+\lstdefinelanguage{batch}{
+  keywords={echo,cd,copy,set,if,else,for,in,do,done,exit,rem},
+  sensitive=false,
+  comment=[l]{rem },
+  morestring=[b]",
+}
+\lstdefinelanguage{yaml}{
+  keywords={true,false,null,yes,no},
+  sensitive=false,
+  comment=[l]{\#},
+  morestring=[b]',
+  morestring=[b]",
+}
+
+%--------------------------- 页眉页脚 -------------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\kaishu\leftmark}
+\fancyhead[R]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyhead[R]{\small\thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+}
+
+%--------------------------- 颜色盒子 (note callout) ----------------
+\usepackage[most]{tcolorbox}
+\definecolor{notebar}{RGB}{70,120,190}
+\definecolor{notebg}{RGB}{239,245,252}
+\newtcolorbox{notebox}[1][]{
+  enhanced,
+  colback=notebg,
+  colframe=notebar,
+  coltitle=white,
+  fonttitle=\bfseries\sffamily,
+  title={#1},
+  boxrule=0pt,
+  leftrule=3pt,
+  arc=2pt,
+  left=6pt,right=6pt,top=4pt,bottom=4pt,
+  breakable,
+}
+
+%--------------------------- 高亮 -----------------------------------
+% soul's \hl breaks on CJK/math and \colorbox cannot break lines (overfull).
+% Use coloured bold text: it highlights concepts and wraps naturally.
+\newcommand{\hl}[1]{\textcolor{notebar!85!black}{\bfseries #1}}
+
+%--------------------------- 概念卡片附录环境 -----------------------
+\newcounter{card}
+\newenvironment{appendixcards}{%
+  \par\vspace{1em}%
+  \begin{tcolorbox}[enhanced,colback=notebg!60,colframe=notebar!70,
+    title={\bfseries 概念卡片},breakable,arc=2pt]
+  \renewcommand{\thesubsection}{}%
+}{%
+  \end{tcolorbox}%
+}
+% 卡片内的小节标题样式
+\newcommand{\cardtitle}[1]{\par\medskip{\bfseries\color{notebar}#1}\par\nobreak}
+
+%--------------------------- 定理类环境 -----------------------------
+\theoremstyle{definition}
+\newtheorem{definition}{定义}[chapter]
+\newtheorem{example}{例}[chapter]
+\theoremstyle{plain}
+\newtheorem{theorem}{定理}[chapter]
+\newtheorem{lemma}{引理}[chapter]
+\newtheorem{corollary}{推论}[chapter]
+\theoremstyle{remark}
+\newtheorem{remark}{注}[chapter]
+
+%--------------------------- 其它 -------------------------------
+\usepackage{url}
+\usepackage[hidelinks,bookmarksnumbered,bookmarksopen]{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=notebar!80!black,
+  citecolor=notebar!80!black,
+  urlcolor=teal!70!black,
+  pdftitle={@@TITLE@@},
+  pdfauthor={@@AUTHOR@@},
+}
+\usepackage{bookmark}
+\usepackage{footmisc}
+
+%--------------------------- 标题格式 -------------------------------
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\sffamily}
+  {\filleft\Large 第\,\thechapter\,章}
+  {1ex}
+  {\titlerule\vspace{1ex}\filright}
+  [\vspace{1ex}\titlerule]
+
+%=====================================================================
+\begin{document}
+
+%--------------------------- 封面 -----------------------------------
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries\sffamily @@TITLE@@\par}
+\vspace{0.8cm}
+{\LARGE\sffamily @@SUBTITLE@@\par}
+\vspace{1.5cm}
+{\large @@BLURB@@\par}
+\vfill
+{\large 原始笔记作者：@@AUTHOR@@\par}
+\vspace{0.3cm}
+{\large 项目地址：\url{@@URL@@}\par}
+\vspace{0.3cm}
+{\large 本 PDF 由笔记 LaTeX 重排生成\par}
+\vspace{0.8cm}
+{\large \today\par}
+\end{titlepage}
+
+\frontmatter
+\pagestyle{fancy}
+\tableofcontents
+
+\mainmatter
+
+\input{chapters/_manifest.tex}
+
+\end{document}
